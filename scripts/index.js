@@ -7,7 +7,6 @@ const cardTemplate = document.querySelector("#card-template");
 const placesContainer = document.querySelector(".places__list");
 
 // @todo: Функция создания карточки
-//Название карточек не выводилось на страницу
 
 function createCard(cardData, handleDeleteCard) {
   const element = cardTemplate.content.querySelector('.card').cloneNode(true);
