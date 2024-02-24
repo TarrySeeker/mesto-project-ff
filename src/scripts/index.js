@@ -1,26 +1,29 @@
+
 import "../pages/index.css";
 import { initialCards } from "../components/cards";
 import { openPopup, closePopup } from "../components/modal";
-import { createCard, deleteCard } from "../components/card";
+import { createCard, deleteCard, likeCard } from "../components/card";
 
-//карточки
+//КОНСТАНТЫ И ПЕРЕМЕННЫЕ
+
+//cписок карточек
 const cardsList = document.querySelector(".places__list");
 
 //кнопки
 const profileEditButton = document.querySelector(".profile__edit-button");
 const newCardButton = document.querySelector(".profile__add-button");
 
-//профиль
+//профиль 
 const profileName = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
 
-//попап
+//попап профиль
 const popupProfile = document.querySelector(".popup_type_edit");
 const popupProfileForm = document.forms['edit-profile'];
 const popupProfileNameInput = popupProfileForm.elements.name;
 const popupProfileDescriptionInput = popupProfileForm.elements.description;
 
-//новая карточка попап
+//попап новая карточка
 const popupAddCard = document.querySelector(".popup_type_new-card");
 const popupAddCardForm = document.forms['new-place'];
 const popupAddCardNameInput = popupAddCardForm.elements['place-name'];
@@ -31,13 +34,19 @@ const popupCard = document.querySelector(".popup_type_image");
 const popupCardImage = document.querySelector(".popup__image");
 const popupCardName = document.querySelector(".popup__caption");
 
-//кнопка закрытия попапа
+//кнопки закрытия
 const closeButtons = document.querySelectorAll('.popup__close');
+
+
+
+
 
 //выводит карточки на страницу
 initialCards.forEach((item) => {
   cardsList.append(createCard(item, deleteCard, openPopupImage, likeCard));
 });
+
+
 
 //слушатель клика по кнопке редактирования профиля
 profileEditButton.addEventListener("click", () => {
@@ -47,10 +56,14 @@ profileEditButton.addEventListener("click", () => {
   openPopup(popupProfile);
 });
 
-// слушатель клика по кнопке добавления карточки
+
+
+//слушатель клика по кнопке добавления карточки
 newCardButton.addEventListener("click", () => {
   openPopup(popupAddCard);
 });
+
+
 
 //слушатель закрытия на все кнопки попапов
 closeButtons.forEach(item => {
@@ -74,15 +87,8 @@ function openPopupImage(evt) {
 
 
 
-//коллбэк добавления лайка
-function likeCard(evt) {
-  evt.target.classList.toggle("card__like-button_is-active");
-}
-
-
-
 //коллбэк сохранения данных формы изменения профиля
-function handleFormSubmit(evt) {
+function handleProfileFormSubmit(evt) {
   evt.preventDefault();
 
   profileName.textContent = popupProfileNameInput.value;
@@ -92,9 +98,7 @@ function handleFormSubmit(evt) {
 }
 
 //слушатель клика по кнопке сохранения формы профиля
-popupProfileForm.addEventListener('submit', handleFormSubmit);
-
-
+popupProfileForm.addEventListener('submit', handleProfileFormSubmit);
 
 //коллбэк сохранения данных формы добавления карточки
 function handleCardFormSubmit(evt) {

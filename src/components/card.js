@@ -24,3 +24,10 @@ export function deleteCard(evt) {
   const card = evt.target.closest(".card");
   card.remove();
 }
+
+
+//колбек лайка
+
+export function likeCard(evt) {
+  evt.target.classList.toggle("card__like-button_is-active");
+}
