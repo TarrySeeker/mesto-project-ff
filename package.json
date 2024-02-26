@@ -1,7 +1,7 @@
 {
   "name": "mesto-project-ff",
   "version": "1.0.0",
-  "description": "",
+  "description": " https://tarryseeker.github.io/mesto-project-ff/",
   "main": "index.js",
   "scripts": {
     "build": "webpack --mode production",
