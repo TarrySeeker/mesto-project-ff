@@ -212,31 +212,42 @@ function handleCardFormSubmit(evt) {
 popupAddCardForm.addEventListener("submit", handleCardFormSubmit);
 
 //открытие подтверждения удаления картинки
-function deleteMyCard(card) {
-  openPopup(popupDeleteCard);
+let cardToDelete; // Глобальная переменная для хранения карты, которую нужно удалить
 
-  //присваиваем ID удаляемой карточки в попап подтверждения
-  popupDeleteCardButton.dataset.cardId = card["_id"];
+// Открытие подтверждения удаления картинки
+function deleteMyCard(card) {
+  cardToDelete = card;
+  openPopup(popupDeleteCard);
 }
 
-//коллбэк удаления карточки
+// Коллбэк удаления карточки
 function handleDeleteClick(evt) {
   evt.preventDefault();
 
-  //присваиваем ID удаляемой карточки в попап подтверждения
-  const cardId = popupDeleteCardButton.dataset.cardId;
-  //удаляем с сервера
+  if (!cardToDelete) {
+    console.log("Карта для удаления не определена");
+    return;
+  }
+
+  const cardId = cardToDelete["_id"];
   deleteCardRequest(cardId)
     .then(() => {
-      //через ID на карточках в списке HTML удаляем со страницы
       const deleteCard = document.getElementById(cardId);
 
-      deleteCard.remove();
-      popupDeleteCardButton.dataset.cardId = "";
+      if (deleteCard) {
+        deleteCard.remove();
+      } else {
+        console.log("Элемент не найден на странице");
+      }
+
+      cardToDelete = null; // Сбрасываем значение переменной
       closePopup(popupDeleteCard);
     })
     .catch((err) => console.log(err));
 }
+
+// Удаление карточки при подтверждении popup
+popupDeleteCardButton.addEventListener("click", handleDeleteClick);
 
 //удаление карточки при подтверждении popup
 popupDeleteCardButton.addEventListener("click", handleDeleteClick);

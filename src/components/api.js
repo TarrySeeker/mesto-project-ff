@@ -1,7 +1,9 @@
+const cogort = 'wff-cohort-8'
+const token = '4c342f59-ab88-4d05-986e-bf4c6061906b'
 const config = {
-    baseUrl: "https://nomoreparties.co/v1/wff-cohort-8",
+    baseUrl: `https://nomoreparties.co/v1/${cogort}`,
     headers: {
-      authorization: "4c342f59-ab88-4d05-986e-bf4c6061906b",
+      authorization: token,
       "Content-Type": "application/json",
     },
   };

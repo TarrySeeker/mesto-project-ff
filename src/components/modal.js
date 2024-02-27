@@ -1,9 +1,3 @@
-/*  
-    объект для данного модуля для возможности переиспользования.
-    Не передается в качестве параметра, так как 
-    предполагается использование только в этом файле, 
-    поэтому вызывается из глобальной области видимости 
-*/
 const config = {
   openPopupClass: "popup_is-opened",
   animatedPopupClass: "popup_is-animated",
@@ -11,20 +5,8 @@ const config = {
 
 //функция открытия попапа
 export function openPopup(popup) {
-  popup.classList.add(config.animatedPopupClass);
-
-  //добавляем таймаут для добавления класса после анимации
-
-  setTimeout(() => {
-    popup.classList.add(config.openPopupClass);
-  }, 0);
-
+  popup.classList.add(config.openPopupClass);
   document.addEventListener("keydown", closePopupByESC);
-
-  /**
-   *  Изменено на попап. Согласен с решением повесить на попап один раз,
-   *  но данное решение было дано в задании как обязательное, поэтому пока оставляю так.
-   */
   popup.addEventListener("mousedown", closePopupByOverlay);
 }
 
