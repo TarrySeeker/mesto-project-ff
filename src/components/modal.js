@@ -3,14 +3,10 @@ const config = {
   animatedPopupClass: "popup_is-animated",
 };
 
-// Функция открытия попапа
 export function openPopup(popup) {
   popup.classList.add(config.animatedPopupClass);
+  popup.classList.add(config.openPopupClass);
 
-  // Добавляем таймаут для добавления класса после анимации
-  setTimeout(() => {
-    popup.classList.add(config.openPopupClass);
-  }, 0);
 
   document.addEventListener("keydown", closePopupByESC);
 }
@@ -25,7 +21,6 @@ export function closePopup(popup) {
   }, 600);
 
   document.removeEventListener("keydown", closePopupByESC);
-  popup.removeEventListener("mousedown", closePopupByOverlay);
 }
 
 // Функция закрытия попапа кнопкой ESC
