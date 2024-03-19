@@ -1,8 +1,11 @@
-
 import "../pages/index.css";
-import { openPopup, closePopup } from "../components/modal";
+import {
+  openPopup,
+  closePopup,
+  closePopupByOverlay,
+} from "../components/modal";
 import { createCard, likeCard } from "../components/card";
-import { enableValidation, clearValidation } from "../components/valid";
+import { enableValidation, clearValidation } from "../components/validation";
 import {
   deleteCardRequest,
   addCardRequest,
@@ -16,51 +19,54 @@ import {
     КОНСТАНТЫ И ПЕРЕМЕННЫЕ
 */
 
-//список карточек
+// Список карточек
 const cardsList = document.querySelector(".places__list");
 
-//кнопки
+// Кнопки
 const profileEditButton = document.querySelector(".profile__edit-button");
 const newCardButton = document.querySelector(".profile__add-button");
 
-//профиль на странице
+// ПРОФИЛЬ на странице
 const profileName = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
 const profileImage = document.querySelector(".profile__image");
 
-//попап АВАТАР
+// Попап АВАТАР
 const popupAvatar = document.querySelector(".popup_avatar");
 const popupAvatarForm = document.forms["change-avatar"];
 const popupAvatarLinkInput = popupAvatarForm.elements.link;
 const popupAvatarButton = popupAvatar.querySelector(".popup__button");
 
-//попап ПРОФИЛЬ
+// Попап ПРОФИЛЬ
 const popupProfile = document.querySelector(".popup_type_edit");
 const popupProfileForm = document.forms["edit-profile"];
 const popupProfileNameInput = popupProfileForm.elements.name;
 const popupProfileDescriptionInput = popupProfileForm.elements.description;
 const popupProfileButton = popupProfile.querySelector(".popup__button");
 
-//попап НОВАЯ КАРТОЧКА
+// Попап НОВАЯ КАРТОЧКА
 const popupAddCard = document.querySelector(".popup_type_new-card");
 const popupAddCardForm = document.forms["new-place"];
 const popupAddCardNameInput = popupAddCardForm.elements["place-name"];
 const popupAddCardLinkInput = popupAddCardForm.elements.link;
 const popupAddCardButton = popupAddCard.querySelector(".popup__button");
 
-//попап КАРТОЧКА
+// Попап КАРТОЧКА
 const popupCard = document.querySelector(".popup_type_image");
 const popupCardImage = document.querySelector(".popup__image");
 const popupCardName = document.querySelector(".popup__caption");
 
-//попап ПОДТВЕРЖДЕНИЕ УДАЛЕНИЯ КАРТОЧКИ
+// Попап ПОДТВЕРЖДЕНИЕ УДАЛЕНИЯ КАРТОЧКИ
 const popupDeleteCard = document.querySelector(".popup_delete-image");
 const popupDeleteCardButton = popupDeleteCard.querySelector(".popup__button");
 
-//кнопки закрытия попапов
+// Кнопки закрытия попапов
 const closeButtons = document.querySelectorAll(".popup__close");
 
-//config для валидации форм
+// Все попапы
+const popupsList = document.querySelectorAll(".popup");
+
+// Config для валидации форм
 const validationConfig = {
   formSelector: ".popup__form",
   inputSelector: ".popup__input",
@@ -70,25 +76,25 @@ const validationConfig = {
   errorClass: "popup__error_visible",
 };
 
-//мой ID
+// Мой ID
 export let accountId = "";
 
 /*-----------------------------------------------------------------------------------
     
 */
 
-//вывод карточке на страницу
+// Вывод карточке на страницу
 Promise.all([getCardsRequest(), getMyInfoRequest()])
   .then((request) => {
-    //получаем ID моего аккаунта
+    // Получаем ID моего аккаунта
     accountId = request[1]["_id"];
 
-    //заполняем разметку моего аккаунта данными с сервера
+    // Заполняем разметку моего аккаунта данными с сервера
     profileName.textContent = request[1].name;
     profileDescription.textContent = request[1].about;
     profileImage.style = `background-image: url('${request[1].avatar}')`;
 
-    //выводим карточки на страницу
+    // Выводим карточки на страницу
     request[0].forEach((card) => {
       cardsList.append(
         createCard(card, deleteMyCard, openPopupImage, likeCard, accountId)
@@ -99,10 +105,10 @@ Promise.all([getCardsRequest(), getMyInfoRequest()])
     console.log(err);
   });
 
-//валидация форм
+// Валидация форм
 enableValidation(validationConfig);
 
-//слушатель клика по кнопке редактирования аватара
+// Слушатель клика по кнопке редактирования аватара
 profileImage.addEventListener("click", () => {
   popupAvatarForm.reset();
 
@@ -110,7 +116,7 @@ profileImage.addEventListener("click", () => {
   openPopup(popupAvatar);
 });
 
-//слушатель клика по кнопке редактирования профиля
+// Слушатель клика по кнопке редактирования профиля
 profileEditButton.addEventListener("click", () => {
   popupProfileNameInput.value = profileName.textContent;
   popupProfileDescriptionInput.value = profileDescription.textContent;
@@ -119,7 +125,7 @@ profileEditButton.addEventListener("click", () => {
   openPopup(popupProfile);
 });
 
-//слушатель клика по кнопке добавления карточки
+// Слушатель клика по кнопке добавления карточки
 newCardButton.addEventListener("click", () => {
   popupAddCardForm.reset();
 
@@ -127,7 +133,12 @@ newCardButton.addEventListener("click", () => {
   openPopup(popupAddCard);
 });
 
-//слушатель закрытия на все кнопки попапов
+// Слушатель закрытия по оверлею на все попапы
+popupsList.forEach((item) => {
+  item.addEventListener("mousedown", closePopupByOverlay);
+});
+
+// Слушатель закрытия на все кнопки попапов
 closeButtons.forEach((item) => {
   const popup = item.closest(".popup");
   item.addEventListener("click", () => {
@@ -135,7 +146,7 @@ closeButtons.forEach((item) => {
   });
 });
 
-//функция открытия попапа с изображением
+// Функция открытия попапа с изображением
 function openPopupImage(evt) {
   popupCardImage.src = evt.target.src;
   popupCardImage.alt = evt.target.alt;
@@ -144,12 +155,12 @@ function openPopupImage(evt) {
   openPopup(popupCard);
 }
 
-//коллбэк сохранения нового аватара
+// Коллбэк сохранения нового аватара
 function handleAvatarFormSubmit(evt) {
   evt.preventDefault();
   renderSaving(true, popupAvatarButton);
 
-  changeAvatarRequest(popupAvatarLinkInput)
+  changeAvatarRequest(popupAvatarLinkInput.value)
     .then((res) => {
       profileImage.style = `background-image: url('${res.avatar}')`;
 
@@ -162,16 +173,19 @@ function handleAvatarFormSubmit(evt) {
     });
 }
 
-//слушатель клика по кнопке сохранения формы добавления аватара
+// Слушатель клика по кнопке сохранения формы добавления аватара
 popupAvatarForm.addEventListener("submit", handleAvatarFormSubmit);
 
-//коллбэк сохранения данных формы изменения профиля
+// Коллбэк сохранения данных формы изменения профиля
 function handleProfileFormSubmit(evt) {
   evt.preventDefault();
   renderSaving(true, popupProfileButton);
 
-  //POST запрос добавления имени и описания
-  changeProfileInfoRequest(popupProfileNameInput, popupProfileDescriptionInput)
+  // POST запрос добавления имени и описания
+  changeProfileInfoRequest(
+    popupProfileNameInput.value,
+    popupProfileDescriptionInput.value
+  )
     .then((res) => {
       profileName.textContent = res.name;
       profileDescription.textContent = res.about;
@@ -184,16 +198,16 @@ function handleProfileFormSubmit(evt) {
     });
 }
 
-//слушатель клика по кнопке сохранения формы профиля
+// Слушатель клика по кнопке сохранения формы профиля
 popupProfileForm.addEventListener("submit", handleProfileFormSubmit);
 
-//коллбэк сохранения данных формы добавления карточки
+// Коллбэк сохранения данных формы добавления карточки
 function handleCardFormSubmit(evt) {
   evt.preventDefault();
   renderSaving(true, popupAddCardButton);
 
-  //POST запрос добавления новой карточки
-  addCardRequest(popupAddCardNameInput, popupAddCardLinkInput)
+  // POST запрос добавления новой карточки
+  addCardRequest(popupAddCardNameInput.value, popupAddCardLinkInput.value)
     .then((card) => {
       cardsList.prepend(
         createCard(card, deleteMyCard, openPopupImage, likeCard, accountId)
@@ -208,10 +222,10 @@ function handleCardFormSubmit(evt) {
     });
 }
 
-//слушатель клика по кнопке сохранения формы добавления карточки
+// Слушатель клика по кнопке сохранения формы добавления карточки
 popupAddCardForm.addEventListener("submit", handleCardFormSubmit);
 
-//открытие подтверждения удаления картинки
+// Открытие подтверждения удаления картинки
 let cardToDelete; // Глобальная переменная для хранения карты, которую нужно удалить
 
 // Открытие подтверждения удаления картинки
@@ -249,10 +263,7 @@ function handleDeleteClick(evt) {
 // Удаление карточки при подтверждении popup
 popupDeleteCardButton.addEventListener("click", handleDeleteClick);
 
-//удаление карточки при подтверждении popup
-popupDeleteCardButton.addEventListener("click", handleDeleteClick);
-
-//функция уведомления о сохранении
+// Функция уведомления о сохранении
 function renderSaving(isLoading, button) {
   if (isLoading) {
     button.textContent = "Сохранение...";

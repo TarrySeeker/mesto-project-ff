@@ -3,19 +3,23 @@ const config = {
   animatedPopupClass: "popup_is-animated",
 };
 
-//функция открытия попапа
+// Функция открытия попапа
 export function openPopup(popup) {
-  popup.classList.add(config.openPopupClass);
+  popup.classList.add(config.animatedPopupClass);
+
+  // Добавляем таймаут для добавления класса после анимации
+  setTimeout(() => {
+    popup.classList.add(config.openPopupClass);
+  }, 0);
+
   document.addEventListener("keydown", closePopupByESC);
-  popup.addEventListener("mousedown", closePopupByOverlay);
 }
 
-//функция закрытия попапа
+// Функция закрытия попапа
 export function closePopup(popup) {
   popup.classList.remove(config.openPopupClass);
 
-  //откладываем удаление на время работы анимации
-
+  // Откладываем удаление на время работы анимации
   setTimeout(() => {
     popup.classList.remove(config.animatedPopupClass);
   }, 600);
@@ -24,7 +28,7 @@ export function closePopup(popup) {
   popup.removeEventListener("mousedown", closePopupByOverlay);
 }
 
-//функция закрытия попапа кнопкой ESC
+// Функция закрытия попапа кнопкой ESC
 function closePopupByESC(evt) {
   if (evt.key === "Escape") {
     const openedPopup = document.querySelector("." + config.openPopupClass);
@@ -33,8 +37,8 @@ function closePopupByESC(evt) {
   }
 }
 
-//функция закрытия попапа по оверлэю
-function closePopupByOverlay(evt) {
+// Функция закрытия попапа по оверлэю
+export function closePopupByOverlay(evt) {
   if (evt.target.classList.contains(config.openPopupClass)) {
     closePopup(evt.target);
   }

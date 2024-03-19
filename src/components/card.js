@@ -2,7 +2,7 @@ import { addLikeRequest, deleteLikeRequest } from "./api";
 
 const cardTemplate = document.querySelector("#card-template").content;
 
-//функция создания карточки путем клонирования темплейта
+// Функция создания карточки путем клонирования темплейта
 export function createCard(
   card,
   deleteFunc,
@@ -18,13 +18,13 @@ export function createCard(
   const cardLikeCounter = cardElement.querySelector(".card__like-counter");
 
   /* 
-    данный элемент присваивается для дальнейшего поиска ID при удалении через попап
+    Данный элемент присваивается для дальнейшего поиска ID при удалении через попап
     (ID присваивается попапу и при подтверждении удаления происходит поиск по списку карточек)
   */
   cardElement.id = card["_id"];
 
   /*
-    если карточка чужая - удаляем кнопку удаления, 
+    Если карточка чужая - удаляем кнопку удаления, 
     функцию удаления вешаем только на свои
    */
   if (myId !== card.owner["_id"]) {
@@ -35,7 +35,7 @@ export function createCard(
     });
   }
 
-  //проверка поставленных лайков
+  // Проверка поставленных лайков
   if (checkMyLike(card, myId)) {
     cardLikeButton.classList.add("card__like-button_is-active");
   } else {
@@ -56,17 +56,17 @@ export function createCard(
   return cardElement;
 }
 
-//коллбэк добавления лайка
+// Коллбэк добавления лайка
 export function likeCard(card, myId, cardElement) {
   const likeButton = cardElement.querySelector(".card__like-button");
   const likesCounter = cardElement.querySelector(".card__like-counter");
 
   /**
-   *  проверяем присутствие своего лайка в карточке на сервере
+   *  Проверяем присутствие своего лайка в карточке на сервере
    */
   if (checkMyLike(card, myId)) {
     /**
-     *  если да - удаляем с сервера, удаляем активный класс из разметки,
+     *  Если да - удаляем с сервера, удаляем активный класс из разметки,
      *  меняем массив лайков на ответ от сервера - для корректной проверки в дальнейшем
      */
     deleteLikeRequest(card)
@@ -80,7 +80,7 @@ export function likeCard(card, myId, cardElement) {
       });
   } else {
     /**
-     *  если нет - добавляем на сервер, добавляем активный класс в разметку,
+     *  Если нет - добавляем на сервер, добавляем активный класс в разметку,
      *  меняем массив лайков на ответ от сервера - для корректной проверки в дальнейшем
      */
     addLikeRequest(card)
@@ -95,7 +95,7 @@ export function likeCard(card, myId, cardElement) {
   }
 }
 
-//проверка моего лайка в массиве лайков карточки
+// Проверка моего лайка в массиве лайков карточки
 function checkMyLike(card, myId) {
   return card.likes.some((item) => item["_id"] === myId);
 }
